@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora Bonificação – Margem por Dentro</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+}
+.box {
+    max-width: 560px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin: auto;
+}
+h2 {
+    text-align: center;
+    color: #1f4e8c;
+}
+label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+.linha {
+    margin-top: 8px;
+    font-size: 14px;
+}
+.resultado {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+}
+.lucro { background: #e0f5e6; color: #1e7e34; }
+.empate { background: #fff3cd; color: #856404; }
+.prejuizo { background: #f8d7da; color: #721c24; }
+.alerta {
+    margin-top: 10px;
+    padding: 10px;
+    background: #eef3ff;
+    border-left: 4px solid #1f4e8c;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>Bonificação × Margem (Cálculo por Dentro)</h2>
+
+<label>Valor da mercadoria (base contábil)</label>
+<input type="number" id="valor" step="0.01" placeholder="Ex: 100">
+
+<label>Margem de venda desejada (%)</label>
+<input type="number" id="margemDesejada" step="0.01" placeholder="Ex: 25">
+
+<div class="linha" id="precoVenda"></div>
+<div class="linha" id="pisRecebimento"></div>
+<div class="linha" id="pisVenda"></div>
+<div class="linha" id="totalPis"></div>
+
+<div id="resultadoFinal" class="resultado"></div>
+<div class="linha" id="margemEfetiva"></div>
+
+<div class="alerta" id="bonificacaoExtra"></div>
+
+</div>
+
+<script>
+function calcular() {
+
+    let custo = parseFloat(document.getElementById("valor").value);
+    let margem = parseFloat(document.getElementById("margemDesejada").value);
+
+    if (isNaN(custo) || isNaN(margem)) {
+        return;
+    }
+
+    const aliquota = 0.0925;
+
+    // Preço de venda com margem desejada
+    let precoVenda = custo * (1 + margem / 100);
+
+    // PIS/COFINS
+    let pisRecebimento = custo * aliquota; // Receita (-)
+    let pisVenda = precoVenda * aliquota;
+    let totalPis = pisRecebimento + pisVenda;
+
+    // Lucro real
+    let lucro = precoVenda - custo - totalPis;
+
+    // Margem efetiva final
+    let margemEfetiva = (lucro / precoVenda) * 100;
+
+    // ===== CÁLCULO POR DENTRO =====
+    // Quanto o custo precisa ser reduzido (via bonificação extra)
+    // para manter a margem desejada após impostos
+    let custoMaximo = precoVenda * (1 - margem/100 - aliquota);
+    let bonificacaoExtra = custo - custoMaximo;
+
+    // Exibição
+    document.getElementById("precoVenda").innerHTML =
+        "Preço de venda: R$ " + precoVenda.toFixed(2);
+
+    document.getElementById("pisRecebimento").innerHTML =
+        "PIS/COFINS no recebimento (Receita −): R$ " + pisRecebimento.toFixed(2);
+
+    document.getElementById("pisVenda").innerHTML =
+        "PIS/COFINS na venda: R$ " + pisVenda.toFixed(2);
+
+    document.getElementById("totalPis").innerHTML =
+        "Total de PIS/COFINS: R$ " + totalPis.toFixed(2);
+
+    let resultadoDiv = document.getElementById("resultadoFinal");
+
+    if (lucro > 0) {
+        resultadoDiv.className = "resultado lucro";
+        resultadoDiv.innerHTML = "LUCRO REAL: R$ " + lucro.toFixed(2);
+    } else if (lucro === 0) {
+        resultadoDiv.className = "resultado empate";
+        resultadoDiv.innerHTML = "EMPATE (margem zerada após tributos)";
+    } else {
+        resultadoDiv.className = "resultado prejuizo";
+        resultadoDiv.innerHTML = "PREJUÍZO: R$ " + lucro.toFixed(2);
+    }
+
+    document.getElementById("margemEfetiva").innerHTML =
+        "Margem efetiva final: " + margemEfetiva.toFixed(2) + "%";
+
+    if (bonificacaoExtra > 0) {
+        document.getElementById("bonificacaoExtra").innerHTML =
+            "👉 Para manter a margem desejada de " + margem.toFixed(2) +
+            "%, seria necessário pedir aproximadamente <b>R$ " +
+            bonificacaoExtra.toFixed(2) +
+            "</b> a mais em bonificação (cálculo por dentro).";
+    } else {
+        document.getElementById("bonificacaoExtra").innerHTML =
+            "✔ A bonificação atual já é suficiente para manter a margem desejada.";
+    }
+}
+
+document.getElementById("valor").addEventListener("input", calcular);
+document.getElementById("margemDesejada").addEventListener("input", calcular);
+</script>
+
+</body>
+</html>
