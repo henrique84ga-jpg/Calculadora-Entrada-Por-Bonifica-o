@@ -2,56 +2,137 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora Bonificação – Margem por Dentro</title>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    padding: 20px;
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --success-bg: #d4edda;
+    --success-text: #155724;
+    --warning-bg: #fff3cd;
+    --warning-text: #856404;
+    --danger-bg: #f8d7da;
+    --danger-text: #721c24;
 }
-.box {
-    max-width: 560px;
-    background: #fff;
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg-color);
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin: 0;
+    color: #333;
+}
+
+.box {
+    max-width: 600px;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     margin: auto;
 }
+
 h2 {
     text-align: center;
-    color: #1f4e8c;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
 }
+
+.form-group {
+    margin-bottom: 15px;
+}
+
 label {
-    font-weight: bold;
-    margin-top: 10px;
+    font-weight: 600;
+    margin-bottom: 6px;
     display: block;
+    color: var(--primary-color);
 }
-input {
+
+input, select {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-}
-.linha {
-    margin-top: 8px;
-    font-size: 14px;
-}
-.resultado {
-    margin-top: 15px;
     padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
     border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+.linha {
+    margin-top: 10px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.destaque-valor {
+    font-weight: bold;
+}
+
+.resultado-container {
+    margin-top: 25px;
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+}
+
+.resultado {
+    padding: 15px;
+    border-radius: 8px;
     font-weight: bold;
     text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
 }
-.lucro { background: #e0f5e6; color: #1e7e34; }
-.empate { background: #fff3cd; color: #856404; }
-.prejuizo { background: #f8d7da; color: #721c24; }
+
+.lucro { background: var(--success-bg); color: var(--success-text); border: 1px solid #c3e6cb; }
+.empate { background: var(--warning-bg); color: var(--warning-text); border: 1px solid #ffeeba; }
+.prejuizo { background: var(--danger-bg); color: var(--danger-text); border: 1px solid #f5c6cb; }
+
 .alerta {
-    margin-top: 10px;
-    padding: 10px;
-    background: #eef3ff;
-    border-left: 4px solid #1f4e8c;
-    font-size: 13px;
+    margin-top: 20px;
+    padding: 15px;
+    background: #e8f4fd;
+    border-left: 5px solid var(--accent-color);
+    font-size: 14px;
+    line-height: 1.5;
+    border-radius: 4px;
+}
+
+.resumo-financeiro {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.resumo-financeiro h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+small {
+    color: #777;
+    font-weight: normal;
 }
 </style>
 </head>
@@ -59,101 +140,191 @@ input {
 <body>
 
 <div class="box">
-<h2>Bonificação × Margem (Cálculo por Dentro)</h2>
+    <h2>Calculadora de Bonificação</h2>
 
-<label>Valor da mercadoria (base contábil)</label>
-<input type="number" id="valor" step="0.01" placeholder="Ex: 100">
+    <div class="form-group">
+        <label>Regime Tributário (PIS/COFINS)</label>
+        <select id="regime">
+            <option value="normal">Padrão (9,25% na entrada e saída)</option>
+            <option value="monofasico">Monofásico / Alíquota Zero (Sem débito na saída)</option>
+        </select>
+    </div>
 
-<label>Margem de venda desejada (%)</label>
-<input type="number" id="margemDesejada" step="0.01" placeholder="Ex: 25">
+    <div class="form-group">
+        <label>Valor da mercadoria (base contábil)</label>
+        <input type="number" id="valor" step="0.01" placeholder="Ex: 100.00">
+    </div>
 
-<div class="linha" id="precoVenda"></div>
-<div class="linha" id="pisRecebimento"></div>
-<div class="linha" id="pisVenda"></div>
-<div class="linha" id="totalPis"></div>
+    <div class="form-group">
+        <label>Margem de venda desejada (%)</label>
+        <input type="number" id="margemDesejada" step="0.01" placeholder="Ex: 25">
+    </div>
 
-<div id="resultadoFinal" class="resultado"></div>
-<div class="linha" id="margemEfetiva"></div>
+    <div class="resultado-container">
+        <div class="linha">
+            <span>Preço de venda sugerido:</span>
+            <span class="destaque-valor" id="precoVenda">R$ 0,00</span>
+        </div>
+        
+        <div class="linha" style="color: #d63384;">
+            <span>(-) PIS/COFINS Entrada (Sobre a Bonificação):</span>
+            <span class="destaque-valor" id="pisRecebimento">R$ 0,00</span>
+        </div>
+        
+        <div class="linha" style="color: #d63384;">
+            <span>(-) PIS/COFINS Saída (Venda):</span>
+            <span class="destaque-valor" id="pisVenda">R$ 0,00</span>
+        </div>
+        
+        <div class="linha" style="font-weight: bold;">
+            <span>(=) Total de Impostos:</span>
+            <span class="destaque-valor" id="totalPis">R$ 0,00</span>
+        </div>
+    </div>
 
-<div class="alerta" id="bonificacaoExtra"></div>
+    <div id="resumoFinanceiro" class="resumo-financeiro" style="display:none;">
+        <h3>Resumo Líquido (Conta Final)</h3>
+        <div class="linha">
+            <span>(+) Entrada (Venda):</span>
+            <span id="resumoEntrada">R$ 0,00</span>
+        </div>
+        <div class="linha">
+            <span>(-) Custo Mercadoria:</span>
+            <span id="resumoCusto">R$ 0,00</span>
+        </div>
+        <div class="linha">
+            <span>(-) Impostos Totais:</span>
+            <span id="resumoImpostos">R$ 0,00</span>
+        </div>
+        <div class="linha" style="border-top: 1px solid #ccc; margin-top:5px; padding-top:5px;">
+            <span style="font-weight:bold;">(=) Resultado Líquido:</span>
+            <span id="resumoLiquido" style="font-weight:bold;">R$ 0,00</span>
+        </div>
+    </div>
+
+    <div id="resultadoFinal" class="resultado"></div>
+    <div style="text-align: center; font-size: 14px; color: #555;" id="margemEfetiva"></div>
+
+    <div class="alerta" id="bonificacaoExtra" style="display:none;"></div>
 
 </div>
 
 <script>
 function calcular() {
-
     let custo = parseFloat(document.getElementById("valor").value);
     let margem = parseFloat(document.getElementById("margemDesejada").value);
+    let regime = document.getElementById("regime").value;
+
+    // Elementos de UI
+    let divResultado = document.getElementById("resultadoFinal");
+    let divAlerta = document.getElementById("bonificacaoExtra");
+    let divResumo = document.getElementById("resumoFinanceiro");
 
     if (isNaN(custo) || isNaN(margem)) {
+        divResultado.innerHTML = "Preencha os valores...";
+        divResultado.className = "resultado";
+        divResultado.style.background = "#eee";
+        divResultado.style.color = "#555";
+        divAlerta.style.display = "none";
+        divResumo.style.display = "none";
         return;
     }
 
-    const aliquota = 0.0925;
+    const aliquotaPadrao = 0.0925;
+    
+    // Define a alíquota de SAÍDA baseada na seleção
+    let aliquotaSaida = (regime === 'monofasico') ? 0 : aliquotaPadrao;
+    
+    // A alíquota de ENTRADA (sobre a bonificação recebida) permanece, 
+    // pois o usuário disse "somente haverá a receita na entrada"
+    let aliquotaEntrada = aliquotaPadrao; 
 
-    // Preço de venda com margem desejada
+    // 1. Preço de venda com margem desejada
     let precoVenda = custo * (1 + margem / 100);
 
-    // PIS/COFINS
-    let pisRecebimento = custo * aliquota; // Receita (-)
-    let pisVenda = precoVenda * aliquota;
+    // 2. PIS/COFINS
+    let pisRecebimento = custo * aliquotaEntrada; // Tributo gerado pela entrada da bonificação
+    let pisVenda = precoVenda * aliquotaSaida;    // Tributo gerado pela venda (0 se monofásico)
     let totalPis = pisRecebimento + pisVenda;
 
-    // Lucro real
+    // 3. Lucro real (Valor Líquido)
     let lucro = precoVenda - custo - totalPis;
 
-    // Margem efetiva final
+    // 4. Margem efetiva final
     let margemEfetiva = (lucro / precoVenda) * 100;
 
-    // ===== CÁLCULO POR DENTRO =====
-    // Quanto o custo precisa ser reduzido (via bonificação extra)
-    // para manter a margem desejada após impostos
-    let custoMaximo = precoVenda * (1 - margem/100 - aliquota);
+    // ===== CÁLCULO POR DENTRO (Bonificação Necessária) =====
+    // Fórmula ajustada para considerar a alíquota de saída dinâmica
+    // CustoMaximo = Valor que sobra do Preço de Venda após tirar a Margem Desejada e os Impostos de Saída
+    // Nota: O cálculo original simplificado não considerava o efeito circular do imposto de entrada
+    // mas mantive a lógica de "Quanto o custo precisa baixar".
+    
+    // Se for monofásico, o "custo máximo" aumenta pois paga-se menos imposto na saída
+    let custoMaximo = precoVenda * (1 - margem/100 - aliquotaSaida);
     let bonificacaoExtra = custo - custoMaximo;
 
-    // Exibição
-    document.getElementById("precoVenda").innerHTML =
-        "Preço de venda: R$ " + precoVenda.toFixed(2);
+    // ===== EXIBIÇÃO =====
 
-    document.getElementById("pisRecebimento").innerHTML =
-        "PIS/COFINS no recebimento (Receita −): R$ " + pisRecebimento.toFixed(2);
+    // Atualiza valores monetários
+    const fmt = (v) => "R$ " + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+    document.getElementById("precoVenda").innerText = fmt(precoVenda);
+    document.getElementById("pisRecebimento").innerText = fmt(pisRecebimento);
+    document.getElementById("pisVenda").innerText = fmt(pisVenda) + (regime === 'monofasico' ? " (Isento)" : "");
+    document.getElementById("totalPis").innerText = fmt(totalPis);
 
-    document.getElementById("pisVenda").innerHTML =
-        "PIS/COFINS na venda: R$ " + pisVenda.toFixed(2);
-
-    document.getElementById("totalPis").innerHTML =
-        "Total de PIS/COFINS: R$ " + totalPis.toFixed(2);
-
-    let resultadoDiv = document.getElementById("resultadoFinal");
-
+    // Resumo Financeiro (Conta de Chegada)
+    divResumo.style.display = "block";
+    document.getElementById("resumoEntrada").innerText = fmt(precoVenda);
+    document.getElementById("resumoEntrada").style.color = "blue";
+    
+    document.getElementById("resumoCusto").innerText = fmt(custo);
+    document.getElementById("resumoCusto").style.color = "red";
+    
+    document.getElementById("resumoImpostos").innerText = fmt(totalPis);
+    document.getElementById("resumoImpostos").style.color = "red";
+    
+    let elResumoLiquido = document.getElementById("resumoLiquido");
+    elResumoLiquido.innerText = fmt(lucro);
+    
+    // Estilização do Resultado Principal
     if (lucro > 0) {
-        resultadoDiv.className = "resultado lucro";
-        resultadoDiv.innerHTML = "LUCRO REAL: R$ " + lucro.toFixed(2);
-    } else if (lucro === 0) {
-        resultadoDiv.className = "resultado empate";
-        resultadoDiv.innerHTML = "EMPATE (margem zerada após tributos)";
+        divResultado.className = "resultado lucro";
+        divResultado.innerHTML = "LUCRO REAL: " + fmt(lucro);
+        elResumoLiquido.style.color = "#155724";
+    } else if (Math.abs(lucro) < 0.01) { // Trata flutuação de ponto flutuante perto de zero
+        divResultado.className = "resultado empate";
+        divResultado.innerHTML = "EMPATE (0,00)";
+        elResumoLiquido.style.color = "#856404";
     } else {
-        resultadoDiv.className = "resultado prejuizo";
-        resultadoDiv.innerHTML = "PREJUÍZO: R$ " + lucro.toFixed(2);
+        divResultado.className = "resultado prejuizo";
+        divResultado.innerHTML = "PREJUÍZO: " + fmt(lucro);
+        elResumoLiquido.style.color = "#721c24";
     }
 
-    document.getElementById("margemEfetiva").innerHTML =
-        "Margem efetiva final: " + margemEfetiva.toFixed(2) + "%";
+    document.getElementById("margemEfetiva").innerHTML = 
+        "Margem efetiva final: <b>" + margemEfetiva.toFixed(2) + "%</b>";
 
+    // Lógica do Alerta de Bonificação Extra
+    divAlerta.style.display = "block";
     if (bonificacaoExtra > 0) {
-        document.getElementById("bonificacaoExtra").innerHTML =
-            "👉 Para manter a margem desejada de " + margem.toFixed(2) +
-            "%, seria necessário pedir aproximadamente <b>R$ " +
-            bonificacaoExtra.toFixed(2) +
-            "</b> a mais em bonificação (cálculo por dentro).";
+        divAlerta.innerHTML = 
+            "👉 Para garantir a margem líquida de " + margem.toFixed(2) + 
+            "%, considerando os impostos atuais, você precisaria de mais <b>" + fmt(bonificacaoExtra) + 
+            "</b> em bonificação (redução de custo).";
+        divAlerta.style.borderColor = "#1f4e8c";
+        divAlerta.style.background = "#eef3ff";
     } else {
-        document.getElementById("bonificacaoExtra").innerHTML =
-            "✔ A bonificação atual já é suficiente para manter a margem desejada.";
+        divAlerta.innerHTML = "✔ A bonificação/custo atual é suficiente para a margem desejada.";
+        divAlerta.style.borderColor = "#28a745";
+        divAlerta.style.background = "#e0f5e6";
     }
 }
 
+// Event Listeners
 document.getElementById("valor").addEventListener("input", calcular);
 document.getElementById("margemDesejada").addEventListener("input", calcular);
+document.getElementById("regime").addEventListener("change", calcular);
 </script>
 
 </body>
