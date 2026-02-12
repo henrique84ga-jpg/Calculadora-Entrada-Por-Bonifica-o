@@ -3,328 +3,589 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora Bonificação – Margem por Dentro</title>
+<title>Calculadora Comercial Avançada - Comparativo</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
-    --primary-color: #2c3e50;
-    --accent-color: #3498db;
-    --bg-color: #f0f2f5;
-    --card-bg: #ffffff;
-    --success-bg: #d4edda;
-    --success-text: #155724;
-    --warning-bg: #fff3cd;
-    --warning-text: #856404;
-    --danger-bg: #f8d7da;
-    --danger-text: #721c24;
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --success: #16a34a;
+    --warning: #ca8a04;
+    --danger: #dc2626;
+    --bg-page: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
 }
 
 body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg-color);
-    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-page);
+    color: var(--text-main);
+    padding: 0;
     margin: 0;
-    color: #333;
 }
 
-.box {
-    max-width: 600px;
-    background: var(--card-bg);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    margin: auto;
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
 }
 
-h2 {
+header {
     text-align: center;
-    color: var(--primary-color);
-    margin-bottom: 25px;
+    margin-bottom: 30px;
+}
+
+h1 {
     font-size: 1.5rem;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 15px;
+    color: var(--primary-dark);
+    margin: 0;
 }
 
-.form-group {
-    margin-bottom: 15px;
+.controls {
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
 }
 
-label {
+.toggle-mode {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-weight: 600;
-    margin-bottom: 6px;
-    display: block;
-    color: var(--primary-color);
+    font-size: 0.9rem;
 }
 
-input, select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
+/* Switch Slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px; width: 18px;
+    left: 4px; bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--primary); }
+input:checked + .slider:before { transform: translateX(24px); }
+
+/* GRID LAYOUT COMPARATIVO */
+.grid-comparativo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
-input:focus, select:focus {
-    border-color: var(--accent-color);
-    outline: none;
+@media (max-width: 768px) {
+    .grid-comparativo { grid-template-columns: 1fr; }
 }
 
-.linha {
-    margin-top: 10px;
-    font-size: 14px;
+.card-cenario {
+    background: var(--bg-card);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.card-header {
+    background: #f1f5f9;
+    padding: 15px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--primary-dark);
+    border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
-    padding: 5px 0;
-    border-bottom: 1px dashed #eee;
+    align-items: center;
 }
 
-.destaque-valor {
-    font-weight: bold;
+.card-body {
+    padding: 20px;
 }
 
-.resultado-container {
-    margin-top: 25px;
-    border-top: 2px solid #eee;
-    padding-top: 20px;
+/* INPUTS */
+.input-group { margin-bottom: 15px; }
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-muted);
 }
-
-.resultado {
-    padding: 15px;
+.input-wrapper {
+    position: relative;
+}
+.input-wrapper input, .input-wrapper select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
-    font-weight: bold;
+    font-size: 1rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+.input-wrapper input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* KPI CARDS (Destaques) */
+.kpi-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.kpi-card {
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 8px;
     text-align: center;
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
 }
+.kpi-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-value { font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
+.kpi-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;}
 
-.lucro { background: var(--success-bg); color: var(--success-text); border: 1px solid #c3e6cb; }
-.empate { background: var(--warning-bg); color: var(--warning-text); border: 1px solid #ffeeba; }
-.prejuizo { background: var(--danger-bg); color: var(--danger-text); border: 1px solid #f5c6cb; }
+.lucro-positivo .kpi-value { color: var(--success); }
+.lucro-negativo .kpi-value { color: var(--danger); }
 
-.alerta {
+/* LISTA DE RESULTADOS */
+.resultado-lista {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+.item-linha {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #e2e8f0;
+}
+.item-linha span:last-child { font-weight: 600; }
+.text-danger { color: var(--danger); }
+.text-primary { color: var(--primary); }
+
+/* GRÁFICO DONUT CSS */
+.chart-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
     margin-top: 20px;
-    padding: 15px;
-    background: #e8f4fd;
-    border-left: 5px solid var(--accent-color);
-    font-size: 14px;
-    line-height: 1.5;
-    border-radius: 4px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
 }
+.donut-chart {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #dc2626 0% 0%, 
+        #2563eb 0% 0%, 
+        #16a34a 0% 100%
+    );
+    position: relative;
+}
+/* Buraco do donut */
+.donut-chart::after {
+    content: "";
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: var(--bg-card);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+}
+.chart-legend { font-size: 0.8rem; }
+.legend-item { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-.resumo-financeiro {
-    background-color: #f8f9fa;
-    padding: 15px;
+/* BOTÕES */
+.btn-copy {
+    width: 100%;
+    padding: 12px;
+    background: var(--text-main);
+    color: white;
+    border: none;
     border-radius: 8px;
-    margin-top: 20px;
-    border: 1px solid #e9ecef;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    margin-top: 10px;
 }
+.btn-copy:hover { background: #0f172a; }
 
-.resumo-financeiro h3 {
-    margin-top: 0;
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 10px;
-}
+/* AJUSTE PARA MODO INVERSO */
+.hidden { display: none; }
 
-small {
-    color: #777;
-    font-weight: normal;
-}
 </style>
 </head>
 
 <body>
 
-<div class="box">
-    <h2>Calculadora de Bonificação</h2>
+<div class="container">
+    <header>
+        <h1>Calculadora Comercial & Bonificação</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Comparativo de Cenários e Margem por Dentro</p>
+    </header>
 
-    <div class="form-group">
-        <label>Regime Tributário (PIS/COFINS)</label>
-        <select id="regime">
-            <option value="normal">Padrão (9,25% na entrada e saída)</option>
-            <option value="monofasico">Monofásico / Alíquota Zero (Sem débito na saída)</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Valor da mercadoria (base contábil)</label>
-        <input type="number" id="valor" step="0.01" placeholder="Ex: 100.00">
-    </div>
-
-    <div class="form-group">
-        <label>Margem de venda desejada (%)</label>
-        <input type="number" id="margemDesejada" step="0.01" placeholder="Ex: 25">
-    </div>
-
-    <div class="resultado-container">
-        <div class="linha">
-            <span>Preço de venda sugerido:</span>
-            <span class="destaque-valor" id="precoVenda">R$ 0,00</span>
+    <div class="controls">
+        <div class="toggle-mode">
+            <span>Calcular Preço de Venda</span>
+            <label class="switch">
+                <input type="checkbox" id="modeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Descobrir Custo Máximo (Inverso)</span>
         </div>
         
-        <div class="linha" style="color: #d63384;">
-            <span>(-) PIS/COFINS Entrada (Sobre a Bonificação):</span>
-            <span class="destaque-valor" id="pisRecebimento">R$ 0,00</span>
-        </div>
-        
-        <div class="linha" style="color: #d63384;">
-            <span>(-) PIS/COFINS Saída (Venda):</span>
-            <span class="destaque-valor" id="pisVenda">R$ 0,00</span>
-        </div>
-        
-        <div class="linha" style="font-weight: bold;">
-            <span>(=) Total de Impostos:</span>
-            <span class="destaque-valor" id="totalPis">R$ 0,00</span>
+        <div class="toggle-mode" style="margin-left: 20px;">
+            <label style="font-size: 0.9rem; font-weight:600; margin-right:5px;">Regime:</label>
+            <select id="regimeGlobal" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+                <option value="normal">Padrão (9,25%)</option>
+                <option value="monofasico">Monofásico (0% Saída)</option>
+            </select>
         </div>
     </div>
 
-    <div id="resumoFinanceiro" class="resumo-financeiro" style="display:none;">
-        <h3>Resumo Líquido (Conta Final)</h3>
-        <div class="linha">
-            <span>(+) Entrada (Venda):</span>
-            <span id="resumoEntrada">R$ 0,00</span>
+    <div class="grid-comparativo">
+        
+        <div class="card-cenario" id="cenarioA">
+            <div class="card-header">
+                CENÁRIO A (Base)
+            </div>
+            <div class="card-body">
+                <div class="input-group">
+                    <label id="lblInput1_A">Custo da Mercadoria (R$)</label>
+                    <div class="input-wrapper">
+                        <input type="text" class="money-mask" id="input1_A" placeholder="0,00" value="100,00" oninput="formatCurrency(this)">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label id="lblInput2_A">Margem alvo sobre Custo (%)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="input2_A" placeholder="Ex: 30" value="30" step="0.1">
+                    </div>
+                    <small id="hint_A" style="color: #64748b; font-size: 0.75rem;">Define o Preço de Venda</small>
+                </div>
+
+                <div class="kpi-row" id="kpi_A">
+                    <div class="kpi-card" id="cardLucro_A">
+                        <div class="kpi-label">Lucro Líquido</div>
+                        <div class="kpi-value" id="resLucro_A">R$ 0,00</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Margem Real</div>
+                        <div class="kpi-value" id="resMargem_A">0%</div>
+                        <div class="kpi-sub">sobre a venda</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Markup</div>
+                        <div class="kpi-value" id="resMarkup_A">0.0x</div>
+                    </div>
+                </div>
+
+                <div class="resultado-lista">
+                    <div class="item-linha">
+                        <span>Preço de Venda Final</span>
+                        <span class="text-primary" id="resVenda_A">R$ 0,00</span>
+                    </div>
+                    <div class="item-linha">
+                        <span>(-) Custo Mercadoria</span>
+                        <span class="text-danger" id="resCusto_A">R$ 0,00</span>
+                    </div>
+                    <div class="item-linha">
+                        <span>(-) Impostos Totais</span>
+                        <span class="text-danger" id="resImpostos_A">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="donut-chart" id="chart_A"></div>
+                    <div class="chart-legend">
+                        <div class="legend-item"><span class="dot" style="background:#dc2626"></span> Custo</div>
+                        <div class="legend-item"><span class="dot" style="background:#2563eb"></span> Impostos</div>
+                        <div class="legend-item"><span class="dot" style="background:#16a34a"></span> Lucro</div>
+                    </div>
+                </div>
+
+                <button class="btn-copy" onclick="copiarResumo('A')">Copiar Resumo A</button>
+            </div>
         </div>
-        <div class="linha">
-            <span>(-) Custo Mercadoria:</span>
-            <span id="resumoCusto">R$ 0,00</span>
+
+        <div class="card-cenario" id="cenarioB">
+            <div class="card-header" style="background: #eff6ff; color: var(--primary);">
+                CENÁRIO B (Simulação)
+            </div>
+            <div class="card-body">
+                <div class="input-group">
+                    <label id="lblInput1_B">Custo da Mercadoria (R$)</label>
+                    <div class="input-wrapper">
+                        <input type="text" class="money-mask" id="input1_B" placeholder="0,00" value="95,00" oninput="formatCurrency(this)">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label id="lblInput2_B">Margem alvo sobre Custo (%)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="input2_B" placeholder="Ex: 30" value="30" step="0.1">
+                    </div>
+                    <small id="hint_B" style="color: #64748b; font-size: 0.75rem;">Define o Preço de Venda</small>
+                </div>
+
+                <div class="kpi-row" id="kpi_B">
+                    <div class="kpi-card" id="cardLucro_B">
+                        <div class="kpi-label">Lucro Líquido</div>
+                        <div class="kpi-value" id="resLucro_B">R$ 0,00</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Margem Real</div>
+                        <div class="kpi-value" id="resMargem_B">0%</div>
+                        <div class="kpi-sub">sobre a venda</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Markup</div>
+                        <div class="kpi-value" id="resMarkup_B">0.0x</div>
+                    </div>
+                </div>
+
+                <div class="resultado-lista">
+                    <div class="item-linha">
+                        <span>Preço de Venda Final</span>
+                        <span class="text-primary" id="resVenda_B">R$ 0,00</span>
+                    </div>
+                    <div class="item-linha">
+                        <span>(-) Custo Mercadoria</span>
+                        <span class="text-danger" id="resCusto_B">R$ 0,00</span>
+                    </div>
+                    <div class="item-linha">
+                        <span>(-) Impostos Totais</span>
+                        <span class="text-danger" id="resImpostos_B">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="donut-chart" id="chart_B"></div>
+                    <div class="chart-legend">
+                        <div class="legend-item"><span class="dot" style="background:#dc2626"></span> Custo</div>
+                        <div class="legend-item"><span class="dot" style="background:#2563eb"></span> Impostos</div>
+                        <div class="legend-item"><span class="dot" style="background:#16a34a"></span> Lucro</div>
+                    </div>
+                </div>
+
+                <button class="btn-copy" onclick="copiarResumo('B')">Copiar Resumo B</button>
+            </div>
         </div>
-        <div class="linha">
-            <span>(-) Impostos Totais:</span>
-            <span id="resumoImpostos">R$ 0,00</span>
-        </div>
-        <div class="linha" style="border-top: 1px solid #ccc; margin-top:5px; padding-top:5px;">
-            <span style="font-weight:bold;">(=) Resultado Líquido:</span>
-            <span id="resumoLiquido" style="font-weight:bold;">R$ 0,00</span>
-        </div>
+
     </div>
-
-    <div id="resultadoFinal" class="resultado"></div>
-    <div style="text-align: center; font-size: 14px; color: #555;" id="margemEfetiva"></div>
-
-    <div class="alerta" id="bonificacaoExtra" style="display:none;"></div>
-
 </div>
 
 <script>
-function calcular() {
-    let custo = parseFloat(document.getElementById("valor").value);
-    let margem = parseFloat(document.getElementById("margemDesejada").value);
-    let regime = document.getElementById("regime").value;
+// ==================== UTILITÁRIOS ====================
 
-    // Elementos de UI
-    let divResultado = document.getElementById("resultadoFinal");
-    let divAlerta = document.getElementById("bonificacaoExtra");
-    let divResumo = document.getElementById("resumoFinanceiro");
+// Formata input para moeda R$ (Item 6)
+function formatCurrency(input) {
+    let value = input.value.replace(/\D/g, "");
+    value = (value / 100).toFixed(2) + "";
+    value = value.replace(".", ",");
+    value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    input.value = value;
+    calcularGeral(); // Recalcula ao digitar
+}
 
-    if (isNaN(custo) || isNaN(margem)) {
-        divResultado.innerHTML = "Preencha os valores...";
-        divResultado.className = "resultado";
-        divResultado.style.background = "#eee";
-        divResultado.style.color = "#555";
-        divAlerta.style.display = "none";
-        divResumo.style.display = "none";
-        return;
+// Converte string "1.000,00" para float JS
+function parseMoney(str) {
+    if(!str) return 0;
+    return parseFloat(str.replace(/\./g, "").replace(",", ".")) || 0;
+}
+
+// Formata float para display
+function toMoney(val) {
+    return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+// ==================== LÓGICA DE CÁLCULO ====================
+
+const ALIQUOTA_PADRAO = 0.0925; // 9.25%
+
+// Função principal que orquestra A e B
+function calcularGeral() {
+    calcularCenario('A');
+    calcularCenario('B');
+}
+
+function calcularCenario(suffix) {
+    // 1. Coleta Inputs
+    const isReverseMode = document.getElementById("modeSwitch").checked;
+    const regime = document.getElementById("regimeGlobal").value;
+    
+    // Inputs variam dependendo do modo
+    let val1 = parseMoney(document.getElementById(`input1_${suffix}`).value); // Custo ou Preço
+    let val2 = parseFloat(document.getElementById(`input2_${suffix}`).value); // Margem ou Margem
+    
+    if (isNaN(val1)) val1 = 0;
+    if (isNaN(val2)) val2 = 0;
+
+    // Configura Labels Dinamicamente
+    if (isReverseMode) {
+        document.getElementById(`lblInput1_${suffix}`).innerText = "Preço de Venda Desejado (R$)";
+        document.getElementById(`lblInput2_${suffix}`).innerText = "Margem Desejada (%)";
+        document.getElementById(`hint_${suffix}`).innerText = "Define o Custo Máximo permitido";
+    } else {
+        document.getElementById(`lblInput1_${suffix}`).innerText = "Custo da Mercadoria (R$)";
+        document.getElementById(`lblInput2_${suffix}`).innerText = "Margem sobre Custo (Markup %)";
+        document.getElementById(`hint_${suffix}`).innerText = "Define o Preço de Venda";
     }
 
-    const aliquotaPadrao = 0.0925;
+    // Configura Alíquotas
+    let aliquotaSaida = (regime === 'monofasico') ? 0 : ALIQUOTA_PADRAO;
+    let aliquotaEntrada = ALIQUOTA_PADRAO;
+
+    // Variáveis de Saída
+    let custo, precoVenda, margemPct;
+
+    // 2. Realiza o cálculo (Normal ou Inverso)
+    if (!isReverseMode) {
+        // MODO PADRÃO: Tenho Custo + Margem -> Quero Preço
+        // Usuário pediu para manter cálculo original: Preço = Custo * (1 + Margem/100)
+        custo = val1;
+        let margemInput = val2;
+        precoVenda = custo * (1 + margemInput / 100);
+    } else {
+        // MODO INVERSO (Item 2): Tenho Preço + Margem -> Quero Custo Máximo
+        // Invertendo a fórmula: Custo = Preço / (1 + Margem/100)
+        precoVenda = val1;
+        let margemInput = val2;
+        custo = precoVenda / (1 + margemInput / 100);
+    }
+
+    // 3. Calcula Impostos e Lucro
+    // Nota: Imposto de entrada é crédito (reduz custo efetivo contabilmente),
+    // mas na lógica de fluxo de caixa simples pedido:
+    // PIS Recebimento = Custo * 9.25%
+    // PIS Venda = Venda * 9.25% (ou 0)
     
-    // Define a alíquota de SAÍDA baseada na seleção
-    let aliquotaSaida = (regime === 'monofasico') ? 0 : aliquotaPadrao;
-    
-    // A alíquota de ENTRADA (sobre a bonificação recebida) permanece, 
-    // pois o usuário disse "somente haverá a receita na entrada"
-    let aliquotaEntrada = aliquotaPadrao; 
+    let pisRecebimento = custo * aliquotaEntrada; 
+    let pisVenda = precoVenda * aliquotaSaida;
+    let totalPis = pisRecebimento + pisVenda; // Total a pagar de impostos somados
 
-    // 1. Preço de venda com margem desejada
-    let precoVenda = custo * (1 + margem / 100);
-
-    // 2. PIS/COFINS
-    let pisRecebimento = custo * aliquotaEntrada; // Tributo gerado pela entrada da bonificação
-    let pisVenda = precoVenda * aliquotaSaida;    // Tributo gerado pela venda (0 se monofásico)
-    let totalPis = pisRecebimento + pisVenda;
-
-    // 3. Lucro real (Valor Líquido)
     let lucro = precoVenda - custo - totalPis;
+    let margemEfetiva = (precoVenda > 0) ? (lucro / precoVenda) * 100 : 0;
+    let markup = (custo > 0) ? (precoVenda / custo) : 0;
 
-    // 4. Margem efetiva final
-    let margemEfetiva = (lucro / precoVenda) * 100;
+    // 4. Atualiza UI (DOM)
+    document.getElementById(`resVenda_${suffix}`).innerText = toMoney(precoVenda);
+    document.getElementById(`resCusto_${suffix}`).innerText = toMoney(custo);
+    document.getElementById(`resImpostos_${suffix}`).innerText = toMoney(totalPis);
+    
+    document.getElementById(`resLucro_${suffix}`).innerText = toMoney(lucro);
+    document.getElementById(`resMargem_${suffix}`).innerText = margemEfetiva.toFixed(2) + "%";
+    document.getElementById(`resMarkup_${suffix}`).innerText = markup.toFixed(2) + "x";
 
-    // ===== CÁLCULO POR DENTRO (Bonificação Necessária) =====
-    // Fórmula ajustada para considerar a alíquota de saída dinâmica
-    // CustoMaximo = Valor que sobra do Preço de Venda após tirar a Margem Desejada e os Impostos de Saída
-    // Nota: O cálculo original simplificado não considerava o efeito circular do imposto de entrada
-    // mas mantive a lógica de "Quanto o custo precisa baixar".
-    
-    // Se for monofásico, o "custo máximo" aumenta pois paga-se menos imposto na saída
-    let custoMaximo = precoVenda * (1 - margem/100 - aliquotaSaida);
-    let bonificacaoExtra = custo - custoMaximo;
-
-    // ===== EXIBIÇÃO =====
-
-    // Atualiza valores monetários
-    const fmt = (v) => "R$ " + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
-    document.getElementById("precoVenda").innerText = fmt(precoVenda);
-    document.getElementById("pisRecebimento").innerText = fmt(pisRecebimento);
-    document.getElementById("pisVenda").innerText = fmt(pisVenda) + (regime === 'monofasico' ? " (Isento)" : "");
-    document.getElementById("totalPis").innerText = fmt(totalPis);
-
-    // Resumo Financeiro (Conta de Chegada)
-    divResumo.style.display = "block";
-    document.getElementById("resumoEntrada").innerText = fmt(precoVenda);
-    document.getElementById("resumoEntrada").style.color = "blue";
-    
-    document.getElementById("resumoCusto").innerText = fmt(custo);
-    document.getElementById("resumoCusto").style.color = "red";
-    
-    document.getElementById("resumoImpostos").innerText = fmt(totalPis);
-    document.getElementById("resumoImpostos").style.color = "red";
-    
-    let elResumoLiquido = document.getElementById("resumoLiquido");
-    elResumoLiquido.innerText = fmt(lucro);
-    
-    // Estilização do Resultado Principal
-    if (lucro > 0) {
-        divResultado.className = "resultado lucro";
-        divResultado.innerHTML = "LUCRO REAL: " + fmt(lucro);
-        elResumoLiquido.style.color = "#155724";
-    } else if (Math.abs(lucro) < 0.01) { // Trata flutuação de ponto flutuante perto de zero
-        divResultado.className = "resultado empate";
-        divResultado.innerHTML = "EMPATE (0,00)";
-        elResumoLiquido.style.color = "#856404";
+    // Estilo condicional do lucro
+    const cardLucro = document.getElementById(`cardLucro_${suffix}`);
+    if(lucro >= 0) {
+        cardLucro.className = "kpi-card lucro-positivo";
     } else {
-        divResultado.className = "resultado prejuizo";
-        divResultado.innerHTML = "PREJUÍZO: " + fmt(lucro);
-        elResumoLiquido.style.color = "#721c24";
+        cardLucro.className = "kpi-card lucro-negativo";
     }
 
-    document.getElementById("margemEfetiva").innerHTML = 
-        "Margem efetiva final: <b>" + margemEfetiva.toFixed(2) + "%</b>";
+    // 5. Atualiza Gráfico (Item 5) - Donut com Conic Gradient
+    if (precoVenda > 0) {
+        // Normaliza percentuais para o gráfico
+        // Custo % no gráfico deve ser visualmente Custo / Venda
+        let pCusto = (custo / precoVenda) * 100;
+        let pImp = (totalPis / precoVenda) * 100;
+        let pLucro = (lucro / precoVenda) * 100;
 
-    // Lógica do Alerta de Bonificação Extra
-    divAlerta.style.display = "block";
-    if (bonificacaoExtra > 0) {
-        divAlerta.innerHTML = 
-            "👉 Para garantir a margem líquida de " + margem.toFixed(2) + 
-            "%, considerando os impostos atuais, você precisaria de mais <b>" + fmt(bonificacaoExtra) + 
-            "</b> em bonificação (redução de custo).";
-        divAlerta.style.borderColor = "#1f4e8c";
-        divAlerta.style.background = "#eef3ff";
-    } else {
-        divAlerta.innerHTML = "✔ A bonificação/custo atual é suficiente para a margem desejada.";
-        divAlerta.style.borderColor = "#28a745";
-        divAlerta.style.background = "#e0f5e6";
+        // Se lucro negativo, o gráfico quebra, então travamos visualmente
+        if (pLucro < 0) { pLucro = 0; pCusto = 100 - pImp; }
+
+        // Pontos de parada do gradiente
+        let stop1 = pCusto; 
+        let stop2 = pCusto + pImp;
+
+        const chart = document.getElementById(`chart_${suffix}`);
+        // Vermelho (Custo), Azul (Imposto), Verde (Lucro)
+        chart.style.background = `conic-gradient(
+            #dc2626 0% ${stop1}%, 
+            #2563eb ${stop1}% ${stop2}%, 
+            #16a34a ${stop2}% 100%
+        )`;
     }
 }
 
-// Event Listeners
-document.getElementById("valor").addEventListener("input", calcular);
-document.getElementById("margemDesejada").addEventListener("input", calcular);
-document.getElementById("regime").addEventListener("change", calcular);
+// ==================== FUNÇÃO COPIAR (Item 3) ====================
+function copiarResumo(suffix) {
+    const venda = document.getElementById(`resVenda_${suffix}`).innerText;
+    const custo = document.getElementById(`resCusto_${suffix}`).innerText;
+    const lucro = document.getElementById(`resLucro_${suffix}`).innerText;
+    const margem = document.getElementById(`resMargem_${suffix}`).innerText;
+    
+    const texto = `📊 *Resumo Calculadora (${suffix})*\n\n` +
+                  `💰 Venda: ${venda}\n` +
+                  `📦 Custo: ${custo}\n` +
+                  `📈 Margem: ${margem}\n` +
+                  `💵 Lucro Liq: ${lucro}`;
+
+    navigator.clipboard.writeText(texto).then(() => {
+        alert("Resumo copiado para a área de transferência!");
+    });
+}
+
+// ==================== EVENT LISTENERS ====================
+document.addEventListener("DOMContentLoaded", () => {
+    // Formata valores iniciais
+    formatCurrency(document.getElementById("input1_A"));
+    formatCurrency(document.getElementById("input1_B"));
+    
+    // Listeners gerais
+    document.getElementById("modeSwitch").addEventListener("change", calcularGeral);
+    document.getElementById("regimeGlobal").addEventListener("change", calcularGeral);
+    
+    // Inputs A
+    document.getElementById("input1_A").addEventListener("input", () => calcularCenario('A')); // formatCurrency já chama calcular
+    document.getElementById("input2_A").addEventListener("input", () => calcularCenario('A'));
+    
+    // Inputs B
+    document.getElementById("input1_B").addEventListener("input", () => calcularCenario('B'));
+    document.getElementById("input2_B").addEventListener("input", () => calcularCenario('B'));
+
+    // Cálculo inicial
+    calcularGeral();
+});
+
 </script>
 
 </body>
